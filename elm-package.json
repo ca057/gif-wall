@@ -1,0 +1,13 @@
+{
+  "name": "gif-wall",
+  "summary": "A GIF wall for your party.",
+  "version": "1.0.0",
+  "source-directories": ["src"],
+  "license": "GPLv3",
+  "repository": "https://github.com/ca057/gif-wall.git",
+  "dependencies": {
+    "elm-lang/core": "5.0.0 <= v < 6.0.0"
+  },
+  "exposed-modules": [],
+  "elm-version": "0.18.0 <= v < 0.19.0"
+}
