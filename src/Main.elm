@@ -1,15 +1,55 @@
-module Main where
+module Main exposing (..)
 
--- MODEL
+import Html exposing (Html, text, div, img)
+import Html.Attributes exposing (src)
 
-type alias Model = { }
+
+---- MODEL ----
 
 
--- UPDATE
+type alias Model =
+    {}
 
-type Action = Reset
 
-update : Action → Model → Model
-update action model =
-  case action of
-    Reset → model
+init : ( Model, Cmd Msg )
+init =
+    ( {}, Cmd.none )
+
+
+
+---- UPDATE ----
+
+
+type Msg
+    = NoOp
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    ( model, Cmd.none )
+
+
+
+---- VIEW ----
+
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ img [ src "/logo.svg" ] []
+        , div [] [ text "Your Elm App is working!" ]
+        ]
+
+
+
+---- PROGRAM ----
+
+
+main : Program Never Model Msg
+main =
+    Html.program
+        { view = view
+        , init = init
+        , update = update
+        , subscriptions = always Sub.none
+        }
