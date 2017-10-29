@@ -6,16 +6,28 @@ import Components.Loading as Loading exposing (view)
 import Components.Attributions as Attributions exposing (view)
 
 
+---- FLAGS ----
+
+
+type alias Flags =
+    { tag : String
+    , rating : String
+    }
+
+
+
 ---- MODEL ----
 
 
 type alias Model =
-    {}
+    { tag : String
+    , rating : String
+    }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( {}, Cmd.none )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( Model flags.tag flags.rating, Cmd.none )
 
 
 
@@ -40,6 +52,8 @@ view model =
     Html.main_ [ class "container" ]
         [ Loading.view
         , Attributions.view
+        , text model.tag
+        , text model.rating
         ]
 
 
@@ -47,9 +61,9 @@ view model =
 ---- PROGRAM ----
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { view = view
         , init = init
         , update = update
