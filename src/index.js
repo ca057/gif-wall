@@ -10,7 +10,9 @@ Main.fullscreen(
     .split('&')
     .map(q => q.split('='))
     .map(([key, value]) => ({ [key]: value }))
-    .reduce((r, c) => Object.assign({}, r, c), {})
+    .reduce((r, c) => Object.assign({}, r, c), {
+      tag: 'party'
+    })
 );
 
 registerServiceWorker();
