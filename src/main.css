@@ -16,7 +16,17 @@ main {
   align-items: center;
 }
 
+img.gifView {
+  position: fixed;
+  min-width: 100%;
+  min-height: 100%;
+}
+
 div.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 40px;
   height: 40px;
   animation-name: rotation;
@@ -35,11 +45,9 @@ div.loading {
 }
 
 div.loading > div {
-  margin: auto;
   width: 20px;
   height: 20px;
   background-color: red;
-  transform: translate(0, 10px);
   animation-name: rainbow;
   animation-direction: alternate;
   animation-duration: 0.5s;
@@ -50,9 +58,7 @@ div.loading > div {
 @keyframes rainbow {
   0% {
     background-color: red;
-    height: 40px;
-    border-radius: 10px;
-    transform: translate(0, 0);
+    transform: scaleX(2);
   }
   17% {
     background-color: orange;
@@ -62,10 +68,7 @@ div.loading > div {
   }
   50% {
     background-color: green;
-    width: 20px;
-    height: 20px;
-    border-radius: 0;
-    transform: translate(0, 10px);
+    transform: scale(1, 1);
   }
   67% {
     background-color: blue;
@@ -75,9 +78,7 @@ div.loading > div {
   }
   100% {
     background-color: violet;
-    width: 40px;
-    border-radius: 10px;
-    box-shadow: 1px black;
+    transform: scaleY(2);
   }
 }
 
