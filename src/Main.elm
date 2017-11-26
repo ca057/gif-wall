@@ -61,13 +61,7 @@ init flags =
                     parsedRefreshRate
             )
     in
-        ( Model tag
-            rating
-            ""
-            refreshRate
-            (Config apiKey)
-        , getRandomGif ( apiKey, tag, rating )
-        )
+        ( Model tag rating "" refreshRate (Config apiKey), getRandomGif ( apiKey, tag, rating ) )
 
 
 
