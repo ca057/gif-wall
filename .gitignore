@@ -15,3 +15,6 @@ node_modules
 
 # configuration files
 .env
+
+# editor files
+.vscode
