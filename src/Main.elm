@@ -50,10 +50,24 @@ init flags =
         rating =
             flags.rating
 
+        parsedRefreshRate =
+            Result.withDefault 10 (String.toFloat flags.refreshRate)
+
         refreshRate =
-            (Time.second * (Result.withDefault 10 (String.toFloat flags.refreshRate)))
+            (Time.second
+                * if (parsedRefreshRate <= 0) then
+                    1
+                  else
+                    parsedRefreshRate
+            )
     in
-        ( Model tag rating "" refreshRate (Config apiKey), getRandomGif ( apiKey, tag, rating ) )
+        ( Model tag
+            rating
+            ""
+            refreshRate
+            (Config apiKey)
+        , getRandomGif ( apiKey, tag, rating )
+        )
 
 
 
