@@ -2,7 +2,7 @@
 
 GIF wall which displays random GIFs in an interval from
 [GIPHY](https://giphy.com/). Application is running on
-[gif.christianost.de](https://gif.christianost.de)
+[gif.christianost.de](https://gif.christianost.de).
 
 GIF selection can be customized by passing the following URL query parameters:
 
