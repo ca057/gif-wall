@@ -2,10 +2,11 @@ import './main.css';
 import { Main } from './Main.elm';
 import registerServiceWorker from './registerServiceWorker';
 
-// Main.embed(document.getElementById('root'));
-const whiteList = {
-  tag: true,
-  rating: true
+const defaultFlags = {
+  tag: 'party',
+  rating: 'pg-13',
+  refreshRate: '10',
+  apiKey: process.env.ELM_APP_API_KEY,
 };
 
 Main.fullscreen(
@@ -13,11 +14,11 @@ Main.fullscreen(
     .substring((window.location.origin + window.location.pathname).length + 1)
     .split('&')
     .map(q => q.split('='))
-    .filter(([key]) => whiteList[key])
-    .reduce((r, [key, value]) => Object.assign({}, r, { [key]: value }), {
-      tag: 'party',
-      rating: 'pg-13'
-    })
+    .filter(([key]) => defaultFlags[key])
+    .reduce(
+      (result, [key, value]) => Object.assign(result, { [key]: value }),
+      defaultFlags,
+    ),
 );
 
 registerServiceWorker();

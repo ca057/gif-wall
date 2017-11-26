@@ -4,6 +4,7 @@ import Http
 import Json.Decode as Decode
 import Html exposing (Html, text, div, img)
 import Html.Attributes exposing (class, src)
+import Time exposing (Time, minute)
 import Components.Loading as Loading exposing (view)
 import Components.Attributions as Attributions exposing (view)
 
@@ -14,6 +15,8 @@ import Components.Attributions as Attributions exposing (view)
 type alias Flags =
     { tag : String
     , rating : String
+    , apiKey : String
+    , refreshRate : String
     }
 
 
@@ -21,16 +24,36 @@ type alias Flags =
 ---- MODEL ----
 
 
+type alias Config =
+    { apiKey : String
+    }
+
+
 type alias Model =
     { tag : String
     , rating : String
     , gifUrl : String
+    , refreshRate : Float
+    , config : Config
     }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model flags.tag flags.rating "", getRandomGif ( flags.tag, flags.rating ) )
+    let
+        apiKey =
+            flags.apiKey
+
+        tag =
+            flags.tag
+
+        rating =
+            flags.rating
+
+        refreshRate =
+            (Time.second * (Result.withDefault 10 (String.toFloat flags.refreshRate)))
+    in
+        ( Model tag rating "" refreshRate (Config apiKey), getRandomGif ( apiKey, tag, rating ) )
 
 
 
@@ -46,13 +69,22 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         RequestGif ->
-            ( model, getRandomGif ( model.tag, model.rating ) )
+            ( model, getRandomGif ( model.config.apiKey, model.tag, model.rating ) )
 
         NewGif (Ok newUrl) ->
             ( { model | gifUrl = newUrl }, Cmd.none )
 
         NewGif (Err _) ->
             ( model, Cmd.none )
+
+
+
+---- SUBSCRIPTIONS ----
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Time.every model.refreshRate (\time -> RequestGif)
 
 
 
@@ -84,7 +116,7 @@ main =
         { view = view
         , init = init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
 
 
@@ -92,11 +124,11 @@ main =
 ---- HTTP ----
 
 
-getRandomGif : ( String, String ) -> Cmd Msg
-getRandomGif ( topic, rating ) =
+getRandomGif : ( String, String, String ) -> Cmd Msg
+getRandomGif ( apiKey, tag, rating ) =
     let
         url =
-            "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=" ++ topic ++ "&rating=" ++ rating
+            "https://api.giphy.com/v1/gifs/random?api_key=" ++ apiKey ++ "&tag=" ++ tag ++ "&rating=" ++ rating
 
         request =
             Http.get url decodeGifUrl
