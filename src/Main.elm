@@ -38,6 +38,11 @@ type alias Model =
     }
 
 
+clampToMinimumOne : number -> number
+clampToMinimumOne =
+    clamp 1 (2 ^ 53 - 1)
+
+
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
@@ -50,16 +55,8 @@ init flags =
         rating =
             flags.rating
 
-        parsedRefreshRate =
-            Result.withDefault 10 (String.toFloat flags.refreshRate)
-
         refreshRate =
-            (Time.second
-                * if (parsedRefreshRate <= 0) then
-                    1
-                  else
-                    parsedRefreshRate
-            )
+            (Time.second * (clampToMinimumOne (Result.withDefault 10 (String.toFloat flags.refreshRate))))
     in
         ( Model tag rating "" refreshRate (Config apiKey), getRandomGif ( apiKey, tag, rating ) )
 
