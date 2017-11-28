@@ -1,10 +1,13 @@
 module Main exposing (..)
 
+import Array exposing (Array)
+import Maybe
+import Random
 import Http
 import Json.Decode as Decode
-import Html exposing (Html, text, div, img)
+import Html exposing (Html, img)
 import Html.Attributes exposing (class, src)
-import Time exposing (Time, minute)
+import Time
 import Components.Loading as Loading exposing (view)
 import Components.Attributions as Attributions exposing (view)
 
@@ -13,7 +16,7 @@ import Components.Attributions as Attributions exposing (view)
 
 
 type alias Flags =
-    { tag : String
+    { tags : String
     , rating : String
     , apiKey : String
     , refreshRate : String
@@ -30,7 +33,7 @@ type alias Config =
 
 
 type alias Model =
-    { tag : String
+    { tags : Array String
     , rating : String
     , gifUrl : String
     , refreshRate : Float
@@ -49,16 +52,16 @@ init flags =
         apiKey =
             flags.apiKey
 
-        tag =
-            flags.tag
+        tags =
+            Array.filter (not << String.isEmpty) <| Array.fromList <| String.split "," flags.tags
 
         rating =
             flags.rating
 
         refreshRate =
-            (Time.second * (clampToMinimumOne (Result.withDefault 10 (String.toFloat flags.refreshRate))))
+            Time.second * clampToMinimumOne (Result.withDefault 10 (String.toFloat flags.refreshRate))
     in
-        ( Model tag rating "" refreshRate (Config apiKey), getRandomGif ( apiKey, tag, rating ) )
+        ( Model tags rating "" refreshRate (Config apiKey), requestNextGif (Array.length tags ))
 
 
 
@@ -67,14 +70,22 @@ init flags =
 
 type Msg
     = RequestGif
+    | PerformRequestGif Int
     | NewGif (Result Http.Error String)
+
+
+requestNextGif : Int -> Cmd Msg
+requestNextGif upperBound = Random.generate PerformRequestGif <| Random.int -1 upperBound
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         RequestGif ->
-            ( model, getRandomGif ( model.config.apiKey, model.tag, model.rating ) )
+            ( model, requestNextGif (Array.length model.tags) )
+
+        PerformRequestGif tagIndex ->
+            ( model, getRandomGif ( model.config.apiKey, Maybe.withDefault "" <| Array.get tagIndex model.tags, model.rating ) )
 
         NewGif (Ok newUrl) ->
             ( { model | gifUrl = newUrl }, Cmd.none )
@@ -89,7 +100,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every model.refreshRate (\time -> RequestGif)
+    Time.every model.refreshRate (\_ -> RequestGif)
 
 
 
@@ -111,21 +122,6 @@ view model =
             ]
 
 
-
----- PROGRAM ----
-
-
-main : Program Flags Model Msg
-main =
-    Html.programWithFlags
-        { view = view
-        , init = init
-        , update = update
-        , subscriptions = subscriptions
-        }
-
-
-
 ---- HTTP ----
 
 
@@ -144,3 +140,16 @@ getRandomGif ( apiKey, tag, rating ) =
 decodeGifUrl : Decode.Decoder String
 decodeGifUrl =
     Decode.at [ "data", "image_url" ] Decode.string
+
+
+---- PROGRAM ----
+
+
+main : Program Flags Model Msg
+main =
+    Html.programWithFlags
+        { view = view
+        , init = init
+        , update = update
+        , subscriptions = subscriptions
+        }

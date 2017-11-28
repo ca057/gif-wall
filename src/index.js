@@ -3,7 +3,7 @@ import { Main } from './Main.elm';
 import registerServiceWorker from './registerServiceWorker';
 
 const defaultFlags = {
-  tag: 'party',
+  tags: 'party',
   rating: 'pg-13',
   refreshRate: '10',
   apiKey: process.env.ELM_APP_API_KEY,
