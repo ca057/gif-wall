@@ -16,8 +16,7 @@ For example, the default configuration could be called like the following:
 
     https://gif.christianost.de?tags=party&rating=pg-13&refreshRate=10
 
-Passing multiple tags to get more randomised GIFs is possible by passing
-multiple tags:
+Pass multiple tags to get more randomised GIFs:
 
     https://gif.christianost.de?tags=party,christmas,bananas
 
