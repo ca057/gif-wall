@@ -24,7 +24,7 @@ main {
   top: 0;
   bottom: 0;
   transform: translateX(-100px);
-  transition: transform 1s ease-in-out;
+  transition: transform 0.5s ease-in-out;
 }
 
 .drawerOpen {

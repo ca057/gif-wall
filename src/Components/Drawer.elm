@@ -6,6 +6,6 @@ import Html.Attributes exposing (class)
 
 view : String -> Html msg
 view className =
-    div [ class ("drawer" ++ className) ] [
+    div [ class ("drawer " ++ className) ] [
       p [] [ text "Drawer"]
     ]

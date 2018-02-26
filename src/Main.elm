@@ -5,8 +5,9 @@ import Maybe
 import Random
 import Http
 import Json.Decode as Decode
-import Html exposing (Html, img)
+import Html exposing (Html, img, button)
 import Html.Attributes exposing (class, src)
+import Html.Events exposing (onDoubleClick)
 import Time
 import Components.Loading as Loading exposing (view)
 import Components.Attributions as Attributions exposing (view)
@@ -74,6 +75,7 @@ type Msg
     = RequestGif
     | PerformRequestGif Int
     | NewGif (Result Http.Error String)
+    | OpenDrawer
 
 
 requestNextGif : Int -> Cmd Msg
@@ -94,6 +96,9 @@ update msg model =
 
         NewGif (Err _) ->
             ( model, Cmd.none )
+
+        OpenDrawer ->
+            ({model | drawerOpen = True }, Cmd.none)
 
 
 
@@ -116,7 +121,11 @@ view model =
             if String.isEmpty model.gifUrl then
                 Loading.view
             else
-                img [ src model.gifUrl, class "gifView" ] []
+                img [
+                    src model.gifUrl
+                    , class "gifView"
+                    , onDoubleClick OpenDrawer
+                ] []
     in
         Html.main_ [ class "container" ]
             [ contentView
