@@ -10,6 +10,7 @@ import Html.Attributes exposing (class, src)
 import Time
 import Components.Loading as Loading exposing (view)
 import Components.Attributions as Attributions exposing (view)
+import Components.Drawer as Drawer exposing (view)
 
 
 ---- FLAGS ----
@@ -38,6 +39,7 @@ type alias Model =
     , gifUrl : String
     , refreshRate : Float
     , config : Config
+    , drawerOpen: Bool
     }
 
 
@@ -61,7 +63,7 @@ init flags =
         refreshRate =
             Time.second * clampToMinimumOne (Result.withDefault 10 (String.toFloat flags.refreshRate))
     in
-        ( Model tags rating "" refreshRate (Config apiKey), requestNextGif (Array.length tags ))
+        ( Model tags rating "" refreshRate (Config apiKey) False, requestNextGif (Array.length tags ))
 
 
 
@@ -118,6 +120,7 @@ view model =
     in
         Html.main_ [ class "container" ]
             [ contentView
+            , Drawer.view (if model.drawerOpen then "drawerOpen" else "")
             , Attributions.view
             ]
 

@@ -16,6 +16,21 @@ main {
   align-items: center;
 }
 
+.drawer {
+  background-color: blueviolet;
+  width: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-100px);
+  transition: transform 1s ease-in-out;
+}
+
+.drawerOpen {
+  transform: translateX(0);
+}
+
 img.gifView {
   position: fixed;
   min-width: 100%;
@@ -87,6 +102,7 @@ div.loading > div {
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: contain;
+  /* TODO make it more responsive */
   width: 50px;
   height: 25px;
   margin: 10px;
