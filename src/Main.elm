@@ -5,7 +5,7 @@ import Maybe
 import Random
 import Http
 import Json.Decode as Decode
-import Html exposing (Html, img, button)
+import Html exposing (Html, img)
 import Html.Attributes exposing (class, src)
 import Html.Events exposing (onDoubleClick)
 import Time
@@ -40,7 +40,7 @@ type alias Model =
     , gifUrl : String
     , refreshRate : Float
     , config : Config
-    , drawerOpen: Bool
+    , drawerOpen : Bool
     }
 
 
@@ -64,7 +64,7 @@ init flags =
         refreshRate =
             Time.second * clampToMinimumOne (Result.withDefault 10 (String.toFloat flags.refreshRate))
     in
-        ( Model tags rating "" refreshRate (Config apiKey) False, requestNextGif (Array.length tags ))
+        ( Model tags rating "" refreshRate (Config apiKey) False, requestNextGif (Array.length tags) )
 
 
 
@@ -79,7 +79,8 @@ type Msg
 
 
 requestNextGif : Int -> Cmd Msg
-requestNextGif upperBound = Random.generate PerformRequestGif <| Random.int -1 upperBound
+requestNextGif upperBound =
+    Random.generate PerformRequestGif <| Random.int -1 upperBound
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -98,7 +99,7 @@ update msg model =
             ( model, Cmd.none )
 
         OpenDrawer ->
-            ({model | drawerOpen = True }, Cmd.none)
+            ( { model | drawerOpen = True }, Cmd.none )
 
 
 
@@ -121,17 +122,24 @@ view model =
             if String.isEmpty model.gifUrl then
                 Loading.view
             else
-                img [
-                    src model.gifUrl
+                img
+                    [ src model.gifUrl
                     , class "gifView"
                     , onDoubleClick OpenDrawer
-                ] []
+                    ]
+                    []
     in
         Html.main_ [ class "container" ]
             [ contentView
-            , Drawer.view (if model.drawerOpen then "drawerOpen" else "")
+            , Drawer.view
+                (if model.drawerOpen then
+                    "drawerOpen"
+                 else
+                    ""
+                )
             , Attributions.view
             ]
+
 
 
 ---- HTTP ----
@@ -152,6 +160,7 @@ getRandomGif ( apiKey, tag, rating ) =
 decodeGifUrl : Decode.Decoder String
 decodeGifUrl =
     Decode.at [ "data", "image_url" ] Decode.string
+
 
 
 ---- PROGRAM ----
