@@ -132,11 +132,14 @@ view model =
         Html.main_ [ class "container" ]
             [ contentView
             , Drawer.view
-                (if model.drawerOpen then
-                    "drawerOpen"
-                 else
-                    ""
-                )
+                [ class
+                    (if model.drawerOpen then
+                        "drawerOpen"
+                     else
+                        ""
+                    )
+                ]
+                []
             , Attributions.view
             ]
 
