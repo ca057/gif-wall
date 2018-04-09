@@ -75,7 +75,7 @@ type Msg
     = RequestGif
     | PerformRequestGif Int
     | NewGif (Result Http.Error String)
-    | OpenDrawer
+    | ToggleDrawer
 
 
 requestNextGif : Int -> Cmd Msg
@@ -98,8 +98,8 @@ update msg model =
         NewGif (Err _) ->
             ( model, Cmd.none )
 
-        OpenDrawer ->
-            ( { model | drawerOpen = True }, Cmd.none )
+        ToggleDrawer ->
+            ( { model | drawerOpen = not model.drawerOpen }, Cmd.none )
 
 
 
@@ -125,22 +125,16 @@ view model =
                 img
                     [ src model.gifUrl
                     , class "gifView"
-                    , onDoubleClick OpenDrawer
                     ]
                     []
     in
-        Html.main_ [ class "container" ]
+        Html.main_ [ class "container", onDoubleClick ToggleDrawer ]
             [ contentView
             , Drawer.view
-                [ class
-                    (if model.drawerOpen then
-                        "drawerOpen"
-                     else
-                        ""
-                    )
-                ]
+                { open = model.drawerOpen
+                }
                 []
-            , Attributions.view
+                [ Attributions.view ]
             ]
 
 

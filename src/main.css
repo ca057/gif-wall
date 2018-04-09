@@ -100,13 +100,8 @@ div.loading > div {
 .attributions__giphy {
   background-image: url(./assets/giphy-attribution.png);
   background-repeat: no-repeat;
-  background-position: bottom;
   background-size: contain;
-  /* TODO make it more responsive */
-  width: 50px;
-  height: 25px;
   margin: 10px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  max-width: 100%;
+  min-height: 100%;
 }
